@@ -7,3 +7,5 @@ const app = new cdk.App();
 new AwsCdkCiCdPipelineStack(app, 'AwsCdkCiCdPipelineStack', {
   env: { account: process.env.ACCOUNT_ID, region: process.env.REGION, },
 });
+
+app.synth();
