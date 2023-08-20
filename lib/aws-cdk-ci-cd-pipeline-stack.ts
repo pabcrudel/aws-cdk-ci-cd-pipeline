@@ -18,6 +18,7 @@ export class AwsCdkCiCdPipelineStack extends cdk.Stack {
       encryption: s3.BucketEncryption.S3_MANAGED,
     });
 
+    /** An action to synthesize the app */
     new pipelines.CodePipeline(this, 'Pipeline', {
       synth: new pipelines.ShellStep('Synth', {
         input: pipelines.CodePipelineSource.gitHub('pabcrudel/aws-cdk-ci-cd-pipeline', 'main'),
