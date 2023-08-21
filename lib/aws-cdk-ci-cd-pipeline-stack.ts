@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as pipelines from 'aws-cdk-lib/pipelines';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
+import { PipelineAppStage } from './stage';
 
 export class AwsCdkCiCdPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -19,7 +20,7 @@ export class AwsCdkCiCdPipelineStack extends cdk.Stack {
     });
 
     /** An action to synthesize the app */
-    new pipelines.CodePipeline(this, 'Pipeline', {
+    const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
       synth: new pipelines.ShellStep('Synth', {
         input: pipelines.CodePipelineSource.gitHub('pabcrudel/aws-cdk-ci-cd-pipeline', 'main'),
         commands: [
@@ -30,5 +31,10 @@ export class AwsCdkCiCdPipelineStack extends cdk.Stack {
       }),
       artifactBucket: artifactBucket,
     });
+
+    const testingStage = pipeline.addStage(new PipelineAppStage(this, 'test'));
+    testingStage.addPost(new pipelines.ManualApprovalStep('Manual approval before production'));
+
+    const productionStage = pipeline.addStage(new PipelineAppStage(this, 'prod'));
   };
 };
