@@ -12,6 +12,6 @@ export class LambdaStack extends cdk.Stack {
             handler: 'handler.main',
             code: lambda.Code.fromAsset(path.join(__dirname, 'lambda')),
             environment: { 'stageName': stageName },
-        });
+        }).applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
     };
 };
